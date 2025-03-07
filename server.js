@@ -48,6 +48,11 @@ app.post("/fruits", async(req, res) => {
     res.redirect("/fruits");
 });
 
+app.get("/fruits/:fruitId", (req, res) => {
+    res.send(`This route renders the show page for the fruit with an id 
+        of ${req.params.fruitId}`);
+});
+
 app.listen(3000, () => {
   console.log('Listening on port 3000');
 });
