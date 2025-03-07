@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const express = require('express'); //express
 const mongoose = require("mongoose");
 const Fruit = require("./models/fruit.js"); // Import the model
+const methodOverride = require("method-override");
+const morgan = require("morgan");
 dotenv.config();
 const app = express();
 
@@ -18,6 +20,9 @@ mongoose.connection.on("error", (error) => {
 
 // middleware to access form data sent to server by the browser when created a new fruit
 app.use(express.urlencoded({ extended: false}));
+app.use(methodOverride("_method"));
+//method override reads the "_method" query param for DELETE or PUT
+app.use(morgan("dev"));
 
 // Landing page
 app.get("/", (req, res) => {
@@ -48,9 +53,16 @@ app.post("/fruits", async(req, res) => {
     res.redirect("/fruits");
 });
 
+// shows the fruit
 app.get("/fruits/:fruitId", async(req, res) => {
     const foundFruit = await Fruit.findById(req.params.fruitId);
     res.render("fruits/show.ejs", { fruit: foundFruit });
+});
+
+// DELETE
+app.delete("/fruits/:fruitId", async(req, res) => {
+    await Fruit.findByIdAndDelete(req.params.fruitId);
+    res.redirect("/fruits");
 });
 
 app.listen(3000, () => {
