@@ -48,9 +48,9 @@ app.post("/fruits", async(req, res) => {
     res.redirect("/fruits");
 });
 
-app.get("/fruits/:fruitId", (req, res) => {
-    res.send(`This route renders the show page for the fruit with an id 
-        of ${req.params.fruitId}`);
+app.get("/fruits/:fruitId", async(req, res) => {
+    const foundFruit = await Fruit.findById(req.params.fruitId);
+    res.render("fruits/show.ejs", { fruit: foundFruit });
 });
 
 app.listen(3000, () => {
